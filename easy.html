@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mines vs Treasure - Easy Mode</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #6c5180; 
+            color: #ffffff;
+        }
+        h1 {
+            color: #ffdd57; 
+        }
+        #game {
+            display: grid;
+            grid-template-columns: repeat(5, 50px); 
+            gap: 15px;
+            margin: 20px auto;
+            align-items: center;
+            justify-content: center;
+        }
+        .cell {
+            width: 50px;
+            height: 50px;
+            background-color: #e8acf0;
+            border: 1px solid #5f003f4f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            transition: background-color 0.2s;
+        }
+        .cell:hover {
+            background-color: #4a103f;
+        }
+        .mine {
+            background-image: url('mine.jpeg');
+            background-size: cover;
+            background-color: #ff4d4d;
+        }
+        .treasure {
+            background-image: url('treasure.jpeg');
+            background-size: cover;
+            background-color: #ffdd57;
+        }
+        .empty {
+            background-color: #616161;
+            cursor: not-allowed;
+        }
+        .found {
+            background-image: url('treasure.jpeg');
+            background-size: cover;
+            cursor: not-allowed;
+        }
+        
+        .stats {
+            font-size: 18px;
+            margin: 10px;
+            font-weight: bold;
+        }
+
+        .red-button {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 20px;
+            cursor: pointer;
+            position: fixed;
+            bottom: 20px;
+            right: 5%;
+            border-radius: 10px;
+            transition: background-color 0.2s;
+        }
+        .red-button:hover {
+            background-color: #cc0000;
+        }
+        .try-button {
+            background-color: #360b7f;
+            color: white;
+            border: none;
+            padding:  10px 20px;
+            font-size: 20px;
+            position: center;
+            bottom: 20px;
+            border-radius: 10px;
+            transition: background-color 0.2s;
+        }
+        .try-button:hover {
+            background-color: #200c43;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Game Mines vs Treasure [EASY MODE]</h1>
+<p>Relax and find the hidden treasures! </p>
+
+
+<div class="stats">
+    <p>Remaining Attempts: <span id="attemptsCount">20</span></p>
+    <p>Treasures Left: <span id="treasuresCount">8</span></p>
+</div>
+
+<div id="game"></div>
+<h2 id="message" style="color: #ffdd57; min-height: 40px;"></h2>
+
+<audio id="winerSound" src="clap.mp3"></audio>
+<audio id="loserSound" src="bomb.mp3"></audio>
+
+<script>
+    const gameContainer = document.getElementById('game');
+    const messageDisplay = document.getElementById('message');
+    const attemptsDisplay = document.getElementById('attemptsCount');
+    const treasuresDisplay = document.getElementById('treasuresCount');
+    
+    const winerSound = document.getElementById('winerSound');
+    const loserSound = document.getElementById('loserSound');
+    
+    
+    const gridSize = 5;
+    const minesCount = 4;        
+    const treasuresCount = 8;    
+    const maxAttempts = 20;      
+    
+    let attempts = 0;
+    let foundTreasures = 0;
+    let cells = [];
+    let gameOver = false;
+
+    function createGrid() {
+        const totalCells = gridSize * gridSize;
+        const cellsArray = Array(totalCells).fill(null);
+        
+        // توزيع الألغام
+        for (let i = 0; i < minesCount; i++) {
+            let index;
+            do {
+                index = Math.floor(Math.random() * totalCells);
+            } while (cellsArray[index] !== null);
+            cellsArray[index] = 'mine';
+        }
+
+        // توزيع الكنوز
+        for (let i = 0; i < treasuresCount; i++) {
+            let index;
+            do {
+                index = Math.floor(Math.random() * totalCells);
+            } while (cellsArray[index] !== null);
+            cellsArray[index] = 'treasure';
+        }
+
+        cells = cellsArray;
+        renderGrid();
+    }
+
+    function renderGrid() {
+        gameContainer.innerHTML = '';
+        cells.forEach((cell, index) => {
+            const cellElement = document.createElement('div');
+            cellElement.classList.add('cell');
+            
+            if (cell === 'empty') cellElement.classList.add('empty');
+            if (cell === 'found') cellElement.classList.add('found');
+            
+            cellElement.addEventListener('click', () => handleCellClick(index, cellElement));
+            gameContainer.appendChild(cellElement);
+        });
+    }
+    
+    function handleCellClick(index, element) {
+        if (gameOver) return;
+        if (cells[index] === 'empty' || cells[index] === 'found') return;
+
+        attempts++;
+        const remainingAttempts = maxAttempts - attempts;
+        attemptsDisplay.textContent = remainingAttempts;
+
+        const cellValue = cells[index];
+
+        if (cellValue === 'mine') {
+            messageDisplay.textContent = "💥 Oops! You found a mine. Don't worry, try again!";
+            loserSound.play();
+            gameOver = true;
+            revealGrid();
+        } 
+        else if (cellValue === 'treasure') {
+            foundTreasures++;
+            treasuresDisplay.textContent = treasuresCount - foundTreasures;
+            cells[index] = 'found';
+            element.classList.add('found');
+            winerSound.play();
+
+            if (foundTreasures === treasuresCount) {
+                messageDisplay.textContent = "🏆 Congratulations! You found all the treasures! You win!";
+                gameOver = true;
+                revealGrid();
+            } else {
+                messageDisplay.textContent = "🎉 Awesome! Another treasure found!";
+            }
+        } 
+        else {
+            messageDisplay.textContent = "Empty cell, you still have plenty of chances!";
+            cells[index] = 'empty';
+            element.classList.add('empty');
+        }
+
+        if (attempts >= maxAttempts && !gameOver) {
+            messageDisplay.textContent = "No more attempts! But it was a great try.";
+            gameOver = true;
+            revealGrid();
+        }
+    }
+
+    function revealGrid() {
+        cells.forEach((cell, index) => {
+            const cellElement = gameContainer.children[index];
+            if (cell === 'mine') {
+                cellElement.classList.add('mine');
+            } else if (cell === 'treasure') {
+                cellElement.classList.add('treasure');
+            }
+        });
+    }
+
+    createGrid();
+</script>
+<button class="try-button" onclick="window.location.href='easy.html';">try again</button>
+<button class="red-button" onclick="window.location.href='index.html';">Exit</button>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+            height: 97%;
+            display: flex;
+            justify-content: center;
+            align-items:flex-end;
+            background-image: url('third image.jpg'); 
+            background-size: cover;
+            background-position: center;
+        }
+
+        table {
+            width: 30%;
+            margin: 95px auto;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 10px;
+            position: absolute;
+            bottom: 60px;
+            left: 450px;
+            transform: translate(-50);
+        }
+
+        th {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: rgb(102, 11, 99);
+        }
+
+        button {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 15px 32px;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 10px;
+            position: fixed;
+            bottom: 20px;
+            left: 600px;
+            transition: translate(-50);
+        }
+        .red-button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 20px;
+            cursor: pointer;
+            position: fixed;
+            bottom: 20px;
+            left: 95%;
+            transform: translateX(-50%);
+            border-radius: 10px;
+        }
+
+        button:hover {
+            background-color: darkgreen;
+        }
+        red-button:hover {
+            background-color: darkred;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <tr>
+            <th>LEVEL SELECT</th>
+        </tr>
+        <tr>
+            <tH> <a href="easy.html" style="color: rgb(255, 255, 255);">easy level</a></tH>
+        </tr>
+        <tr>
+            <tH> <a href="hard.html" style="color: rgb(255, 255, 255) ;">hard level</a></tH>
+        </tr>
+    </table>
+    <button class="red-button" onclick="window.location.href='index.html';">Exit</button>
+</body>
+</html>

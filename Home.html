@@ -1,0 +1,42 @@
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content:flex-end;
+            height: 95vh;
+            background-image: url('second image.jpg'); 
+            background-size: cover;
+            background-position: center;
+            color: white;
+        }
+        input {
+            padding: 10px;
+            margin-bottom: 20px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 15px 30px;
+            background-color: green; 
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: darkgreen;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Enter name</h1>
+    <input type="text" placeholder="Your name here" id="nameInput">
+    <button style="background-color: green; color: white;" onclick="window.location.href='level.html';">Play</button>
+</body>
+</html>
